@@ -164,7 +164,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--void);color:va
 .lnk.hi{opacity:1!important;stroke-width:3!important;filter:drop-shadow(0 0 4px currentColor)}
 .lnk.hi.evolved-into{stroke:#e0c8ff}
 .lnk.hi.collaborated{stroke:#a8d4e8}
-.lnk.lo{opacity:.03!important}
+.lnk.lo{display:none}
 .lhit{fill:none;stroke:transparent;stroke-width:14;cursor:crosshair}
 /* Edge hover highlight — separate bright line drawn on top */
 .lhit.hover-active{stroke:rgba(255,255,255,.15);stroke-width:3;pointer-events:none}
@@ -174,8 +174,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--void);color:va
 .nd-body{transition:filter .15s}
 .nd:hover .nd-body{filter:brightness(1.3)}
 .nd.sel .nd-body{filter:brightness(1.55)}
-.nd.lo{opacity:.08}
-.nd.lo .nd-body{pointer-events:none}
+.nd.lo{display:none}
 .nd-lbl{font-family:'DM Sans',sans-serif;font-size:10px;fill:rgba(210,200,255,.68);pointer-events:none;text-anchor:middle}
 .nd-lbl.ct{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;fill:rgba(240,232,255,.96);letter-spacing:.05em}
 
@@ -648,12 +647,20 @@ function pick(d){
       .classed('lo',n=>!conn.has(n.id));
   lEls.classed('hi',e=>{const s=e.source.id||e.source,t=e.target.id||e.target;return sourceIds.has(s)||sourceIds.has(t);})
       .classed('lo',e=>{const s=e.source.id||e.source,t=e.target.id||e.target;return!(sourceIds.has(s)||sourceIds.has(t));});
+  lHit.style('display',e=>{
+    const s=e.source.id||e.source,t=e.target.id||e.target;
+    return(sourceIds.has(s)||sourceIds.has(t))?null:'none';
+  }).style('pointer-events',e=>{
+    const s=e.source.id||e.source,t=e.target.id||e.target;
+    return(sourceIds.has(s)||sourceIds.has(t))?'all':'none';
+  });
 
   if(isCoreClick) openMothershipPanel(ceF);
   else openP(d,ceF);
 }
 function clearP(){
   sel=null;nEls.classed('sel',false).classed('lo',false);lEls.classed('hi',false).classed('lo',false);
+  applyF();
   document.getElementById('pnl').classList.remove('open');
   // Remove embeds to stop audio playing when panel closes
   document.querySelectorAll('.yt-track,.yt-embed-wrap').forEach(e=>e.remove());
